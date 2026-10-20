@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'clima_page.dart';
 import '../models/lugar_turistico.dart';
 
 class DetalleLugarPage extends StatelessWidget {
@@ -65,6 +66,26 @@ class DetalleLugarPage extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+
+              const SizedBox(height: 32),
+              Center(
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ClimaPage(
+                          nombreLugar: lugar.nombre,
+                          latitud: lugar.latitud,
+                          longitud: lugar.longitud,
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.cloud),
+                  label: const Text('Consultar clima del lugar'),
+                ),
               ),
             ],
           ),

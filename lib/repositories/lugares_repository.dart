@@ -10,12 +10,16 @@ class LugaresRepository {
         nombre: 'Plaza de la Patria',
         descripcion: 'Espacio histórico en el centro de Aguascalientes.',
         ubicacion: 'Centro de Aguascalientes',
+        latitud: 21.88074373268769,
+        longitud: -102.2959301615283,
       ),
       LugarTuristico(
         id: '2',
         nombre: 'Jardín de San Marcos',
         descripcion: 'Uno de los jardines más emblemáticos de la ciudad.',
         ubicacion: 'Barrio de San Marcos',
+        latitud: 21.87971010830155,
+        longitud: -102.30279112212934,
       ),
       LugarTuristico(
         id: '3',
@@ -23,6 +27,8 @@ class LugaresRepository {
         descripcion:
             'Museo dedicado a las expresiones culturales de la muerte.',
         ubicacion: 'Centro de Aguascalientes',
+        latitud: 21.883948329694125,
+        longitud: -102.29546186200008,
       ),
     ];
   }

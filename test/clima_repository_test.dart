@@ -136,4 +136,26 @@ void main() {
       repository.dispose();
     }
   });
+
+  test('Envía las coordenadas del lugar seleccionado', () async {
+    final client = MockClient((request) async {
+      expect(request.url.queryParameters['latitude'], '21.8795');
+      expect(request.url.queryParameters['longitude'], '-102.3045');
+
+      return http.Response(jsonCorrecto, 200);
+    });
+
+    final repository = ClimaRepository(client: client);
+
+    try {
+      final pronostico = await repository.obtenerPronostico(
+        latitud: 21.8795,
+        longitud: -102.3045,
+      );
+
+      expect(pronostico.length, 7);
+    } finally {
+      repository.dispose();
+    }
+  });
 }

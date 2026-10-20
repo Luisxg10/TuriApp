@@ -5,7 +5,16 @@ import '../repositories/clima_repository.dart';
 import '../viewmodels/clima_viewmodel.dart';
 
 class ClimaPage extends StatefulWidget {
-  const ClimaPage({super.key});
+  final String nombreLugar;
+  final double latitud;
+  final double longitud;
+
+  const ClimaPage({
+    super.key,
+    this.nombreLugar = 'Aguascalientes',
+    this.latitud = 21.8853,
+    this.longitud = -102.2916,
+  });
 
   @override
   State<ClimaPage> createState() => _ClimaPageState();
@@ -22,7 +31,7 @@ class _ClimaPageState extends State<ClimaPage> {
     repository = ClimaRepository();
     viewModel = ClimaViewModel(repository: repository);
 
-    viewModel.cargarClima();
+    viewModel.cargarClima(latitud: widget.latitud, longitud: widget.longitud);
   }
 
   @override
@@ -153,7 +162,7 @@ class _ClimaPageState extends State<ClimaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Clima de Aguascalientes')),
+      appBar: AppBar(title: Text('Clima: ${widget.nombreLugar}')),
       body: AnimatedBuilder(
         animation: viewModel,
         builder: (context, child) {
@@ -173,7 +182,12 @@ class _ClimaPageState extends State<ClimaPage> {
                     Text(viewModel.error!, textAlign: TextAlign.center),
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
-                      onPressed: viewModel.cargarClima,
+                      onPressed: () {
+                        viewModel.cargarClima(
+                          latitud: widget.latitud,
+                          longitud: widget.longitud,
+                        );
+                      },
                       icon: const Icon(Icons.refresh),
                       label: const Text('Reintentar'),
                     ),
@@ -188,7 +202,12 @@ class _ClimaPageState extends State<ClimaPage> {
           }
 
           return RefreshIndicator(
-            onRefresh: viewModel.cargarClima,
+            onRefresh: () {
+              return viewModel.cargarClima(
+                latitud: widget.latitud,
+                longitud: widget.longitud,
+              );
+            },
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [

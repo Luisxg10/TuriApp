@@ -14,13 +14,19 @@ class ClimaViewModel extends ChangeNotifier {
   String? error;
   List<PronosticoDia> pronostico = [];
 
-  Future<void> cargarClima() async {
+  Future<void> cargarClima({
+    double latitud = 21.8853,
+    double longitud = -102.2916,
+  }) async {
     cargando = true;
     error = null;
     notifyListeners();
 
     try {
-      pronostico = await repository.obtenerPronostico();
+      pronostico = await repository.obtenerPronostico(
+        latitud: latitud,
+        longitud: longitud,
+      );
     } on TimeoutException {
       pronostico = [];
       error =

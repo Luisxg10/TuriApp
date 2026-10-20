@@ -12,7 +12,10 @@ class ClimaRepositoryFalso extends ClimaRepository {
   ClimaRepositoryFalso(this.respuesta);
 
   @override
-  Future<List<PronosticoDia>> obtenerPronostico() {
+  Future<List<PronosticoDia>> obtenerPronostico({
+    double latitud = 21.8853,
+    double longitud = -102.2916,
+  }) {
     return respuesta();
   }
 }

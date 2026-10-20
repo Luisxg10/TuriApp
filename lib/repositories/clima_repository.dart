@@ -13,10 +13,13 @@ class ClimaRepository {
     this.tiempoEspera = const Duration(seconds: 15),
   }) : _client = client ?? http.Client();
 
-  Future<List<PronosticoDia>> obtenerPronostico() async {
+  Future<List<PronosticoDia>> obtenerPronostico({
+    double latitud = 21.8853,
+    double longitud = -102.2916,
+  }) async {
     final uri = Uri.https('api.open-meteo.com', '/v1/forecast', {
-      'latitude': '21.8853',
-      'longitude': '-102.2916',
+      'latitude': latitud.toString(),
+      'longitude': longitud.toString(),
       'daily':
           'temperature_2m_max,temperature_2m_min,'
           'precipitation_probability_max',

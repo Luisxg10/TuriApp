@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'clima_page.dart';
 import 'lugares_page.dart';
 
 class InicioPage extends StatelessWidget {
@@ -49,6 +50,17 @@ class InicioPage extends StatelessWidget {
                 },
                 icon: const Icon(Icons.place),
                 label: const Text('Explorar lugares'),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ClimaPage()),
+                  );
+                },
+                icon: const Icon(Icons.cloud),
+                label: const Text('Consultar clima'),
               ),
             ],
           ),

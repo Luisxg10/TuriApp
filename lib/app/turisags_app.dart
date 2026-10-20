@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../repositories/clima_repository.dart';
 import '../views/inicio_page.dart';
+
+final climaRepository = ClimaRepository();
 
 class TurisAGSApp extends StatelessWidget {
   const TurisAGSApp({super.key});

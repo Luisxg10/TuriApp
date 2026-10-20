@@ -10,8 +10,8 @@ class LugaresRepository {
         nombre: 'Plaza de la Patria',
         descripcion: 'Espacio histórico en el centro de Aguascalientes.',
         ubicacion: 'Centro de Aguascalientes',
-        latitud: 21.88074373268769,
-        longitud: -102.2959301615283,
+        latitud: 21.963585041386942,
+        longitud: -102.3441541226031,
       ),
       LugarTuristico(
         id: '2',

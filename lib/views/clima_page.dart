@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../app/turisags_app.dart';
 import '../models/pronostico_dia.dart';
 import '../repositories/clima_repository.dart';
 import '../viewmodels/clima_viewmodel.dart';
@@ -28,7 +29,7 @@ class _ClimaPageState extends State<ClimaPage> {
   void initState() {
     super.initState();
 
-    repository = ClimaRepository();
+    repository = climaRepository;
     viewModel = ClimaViewModel(repository: repository);
 
     viewModel.cargarClima(latitud: widget.latitud, longitud: widget.longitud);
@@ -37,7 +38,6 @@ class _ClimaPageState extends State<ClimaPage> {
   @override
   void dispose() {
     viewModel.dispose();
-    repository.dispose();
     super.dispose();
   }
 
@@ -211,6 +211,45 @@ class _ClimaPageState extends State<ClimaPage> {
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
+                if (repository.temperaturaActual != null) ...[
+                  Card(
+                    color: const Color(0xFF008577),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Row(
+                            children: [
+                              Icon(Icons.thermostat, color: Colors.white),
+                              SizedBox(width: 8),
+                              Text(
+                                'Temperatura actual',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            '${repository.temperaturaActual!.grados.toStringAsFixed(1)} °C',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 38,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+
                 const Text(
                   'Pronóstico de los próximos 7 días',
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
@@ -222,6 +261,16 @@ class _ClimaPageState extends State<ClimaPage> {
                   'planear tus actividades.',
                 ),
                 const SizedBox(height: 20),
+                if (repository.ultimaActualizacion != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Text(
+                      'Actualizado: '
+                      '${repository.ultimaActualizacion!.hour.toString().padLeft(2, '0')}:'
+                      '${repository.ultimaActualizacion!.minute.toString().padLeft(2, '0')}',
+                      style: const TextStyle(color: Colors.grey, fontSize: 13),
+                    ),
+                  ),
                 for (final dia in viewModel.pronostico) construirTarjeta(dia),
                 const SizedBox(height: 12),
                 const Center(

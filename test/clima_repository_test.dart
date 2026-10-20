@@ -9,6 +9,7 @@ import 'package:turisags/repositories/clima_repository.dart';
 
 void main() {
   final jsonCorrecto = jsonEncode({
+    'current': {'time': '2026-10-20T11:30', 'temperature_2m': 24.6},
     'daily': {
       'time': [
         '2026-10-20',
@@ -31,6 +32,7 @@ void main() {
       expect(request.url.host, 'api.open-meteo.com');
       expect(request.url.path, '/v1/forecast');
       expect(request.url.queryParameters['forecast_days'], '7');
+      expect(request.url.queryParameters['current'], 'temperature_2m');
 
       return http.Response(jsonCorrecto, 200);
     });
@@ -45,6 +47,9 @@ void main() {
       expect(pronostico.first.temperaturaMinima, 12.0);
       expect(pronostico.first.probabilidadLluvia, 10);
       expect(pronostico.last.probabilidadLluvia, 10);
+      expect(repository.temperaturaActual, isNotNull);
+      expect(repository.temperaturaActual!.grados, 24.6);
+      expect(repository.temperaturaActual!.fechaHora.hour, 11);
     } finally {
       repository.dispose();
     }
@@ -80,6 +85,7 @@ void main() {
 
   test('Detecta una respuesta con menos de siete días', () async {
     final jsonIncompleto = jsonEncode({
+      'current': {'time': '2026-10-20T11:30', 'temperature_2m': 24.6},
       'daily': {
         'time': ['2026-10-20'],
         'temperature_2m_max': [25.0],
@@ -154,6 +160,61 @@ void main() {
       );
 
       expect(pronostico.length, 7);
+    } finally {
+      repository.dispose();
+    }
+  });
+
+  test('Reutiliza el caché para las mismas coordenadas', () async {
+    var numeroPeticiones = 0;
+
+    final client = MockClient((request) async {
+      numeroPeticiones++;
+
+      return http.Response(jsonCorrecto, 200);
+    });
+
+    final repository = ClimaRepository(client: client);
+
+    try {
+      final primerResultado = await repository.obtenerPronostico(
+        latitud: 21.8795,
+        longitud: -102.3045,
+      );
+
+      final segundoResultado = await repository.obtenerPronostico(
+        latitud: 21.8795,
+        longitud: -102.3045,
+      );
+
+      expect(primerResultado.length, 7);
+      expect(segundoResultado.length, 7);
+      expect(numeroPeticiones, 1);
+      expect(repository.ultimaActualizacion, isNotNull);
+    } finally {
+      repository.dispose();
+    }
+  });
+
+  test('El caché conserva la temperatura actual', () async {
+    var peticiones = 0;
+
+    final client = MockClient((request) async {
+      peticiones++;
+      return http.Response(jsonCorrecto, 200);
+    });
+
+    final repository = ClimaRepository(client: client);
+
+    try {
+      await repository.obtenerPronostico(latitud: 21.8795, longitud: -102.3045);
+
+      expect(repository.temperaturaActual!.grados, 24.6);
+
+      await repository.obtenerPronostico(latitud: 21.8795, longitud: -102.3045);
+
+      expect(repository.temperaturaActual!.grados, 24.6);
+      expect(peticiones, 1);
     } finally {
       repository.dispose();
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../models/pronostico_dia.dart';
 import '../repositories/clima_repository.dart';
 import '../viewmodels/clima_viewmodel.dart';
 
@@ -19,7 +20,6 @@ class _ClimaPageState extends State<ClimaPage> {
     super.initState();
 
     repository = ClimaRepository();
-
     viewModel = ClimaViewModel(repository: repository);
 
     viewModel.cargarClima();
@@ -30,6 +30,124 @@ class _ClimaPageState extends State<ClimaPage> {
     viewModel.dispose();
     repository.dispose();
     super.dispose();
+  }
+
+  String formatearFecha(DateTime fecha) {
+    const dias = [
+      'Lunes',
+      'Martes',
+      'Miércoles',
+      'Jueves',
+      'Viernes',
+      'Sábado',
+      'Domingo',
+    ];
+
+    const meses = [
+      'enero',
+      'febrero',
+      'marzo',
+      'abril',
+      'mayo',
+      'junio',
+      'julio',
+      'agosto',
+      'septiembre',
+      'octubre',
+      'noviembre',
+      'diciembre',
+    ];
+
+    return '${dias[fecha.weekday - 1]} '
+        '${fecha.day} de ${meses[fecha.month - 1]}';
+  }
+
+  Widget construirTarjeta(PronosticoDia dia) {
+    final lluviaAlta = dia.probabilidadLluvia >= 60;
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.calendar_today, color: Color(0xFF008577)),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    formatearFecha(dia.fecha),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      const Icon(Icons.thermostat, color: Colors.deepOrange),
+                      const Text('Máxima'),
+                      Text(
+                        '${dia.temperaturaMaxima.toStringAsFixed(1)} °C',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      const Icon(Icons.ac_unit, color: Colors.blue),
+                      const Text('Mínima'),
+                      Text(
+                        '${dia.temperaturaMinima.toStringAsFixed(1)} °C',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                const Icon(Icons.water_drop, color: Colors.blue),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Probabilidad máxima de lluvia: '
+                    '${dia.probabilidadLluvia} %',
+                  ),
+                ),
+              ],
+            ),
+            if (lluviaAlta) ...[
+              const SizedBox(height: 12),
+              const Row(
+                children: [
+                  Icon(Icons.warning_amber, color: Colors.orange),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Probabilidad alta de lluvia. '
+                      'Considera actividades bajo techo.',
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -50,11 +168,14 @@ class _ClimaPageState extends State<ClimaPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    const Icon(Icons.cloud_off, size: 64),
+                    const SizedBox(height: 16),
                     Text(viewModel.error!, textAlign: TextAlign.center),
                     const SizedBox(height: 16),
-                    ElevatedButton(
+                    ElevatedButton.icon(
                       onPressed: viewModel.cargarClima,
-                      child: const Text('Reintentar'),
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('Reintentar'),
                     ),
                   ],
                 ),
@@ -68,32 +189,32 @@ class _ClimaPageState extends State<ClimaPage> {
 
           return RefreshIndicator(
             onRefresh: viewModel.cargarClima,
-            child: ListView.builder(
+            child: ListView(
               padding: const EdgeInsets.all(16),
-              itemCount: viewModel.pronostico.length,
-              itemBuilder: (context, index) {
-                final dia = viewModel.pronostico[index];
-
-                final fecha =
-                    '${dia.fecha.day}/${dia.fecha.month}/'
-                    '${dia.fecha.year}';
-
-                return Card(
-                  child: ListTile(
-                    leading: const Icon(Icons.wb_sunny, color: Colors.orange),
-                    title: Text(fecha),
-                    subtitle: Text(
-                      'Máxima: '
-                      '${dia.temperaturaMaxima.toStringAsFixed(1)} °C\n'
-                      'Mínima: '
-                      '${dia.temperaturaMinima.toStringAsFixed(1)} °C\n'
-                      'Probabilidad de lluvia: '
-                      '${dia.probabilidadLluvia} %',
-                    ),
-                    isThreeLine: true,
+              children: [
+                const Text(
+                  'Pronóstico de los próximos 7 días',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Consulta la temperatura y la '
+                  'probabilidad de lluvia para '
+                  'planear tus actividades.',
+                ),
+                const SizedBox(height: 20),
+                for (final dia in viewModel.pronostico) construirTarjeta(dia),
+                const SizedBox(height: 12),
+                const Center(
+                  child: Text(
+                    'Datos meteorológicos: Open-Meteo\n'
+                    'https://open-meteo.com/',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 12),
                   ),
-                );
-              },
+                ),
+                const SizedBox(height: 16),
+              ],
             ),
           );
         },

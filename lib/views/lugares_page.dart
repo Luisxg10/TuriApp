@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../repositories/lugares_repository.dart';
+import '../viewmodels/lugares_viewmodel.dart';
 import 'detalle_lugar_page.dart';
 
 class LugaresPage extends StatelessWidget {
@@ -8,8 +9,9 @@ class LugaresPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const repository = LugaresRepository();
-    final lugares = repository.obtenerLugares();
+    final viewModel = LugaresViewModel(repository: const LugaresRepository());
+
+    final lugares = viewModel.obtenerLugares();
 
     return Scaffold(
       appBar: AppBar(title: const Text('Lugares turísticos')),

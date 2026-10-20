@@ -11,13 +11,16 @@ class ClimaPage extends StatefulWidget {
 }
 
 class _ClimaPageState extends State<ClimaPage> {
+  late final ClimaRepository repository;
   late final ClimaViewModel viewModel;
 
   @override
   void initState() {
     super.initState();
 
-    viewModel = ClimaViewModel(repository: ClimaRepository());
+    repository = ClimaRepository();
+
+    viewModel = ClimaViewModel(repository: repository);
 
     viewModel.cargarClima();
   }
@@ -25,6 +28,7 @@ class _ClimaPageState extends State<ClimaPage> {
   @override
   void dispose() {
     viewModel.dispose();
+    repository.dispose();
     super.dispose();
   }
 

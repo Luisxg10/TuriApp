@@ -5,6 +5,10 @@ import 'package:http/http.dart' as http;
 import '../models/pronostico_dia.dart';
 
 class ClimaRepository {
+  final http.Client _client;
+
+  ClimaRepository({http.Client? client}) : _client = client ?? http.Client();
+
   Future<List<PronosticoDia>> obtenerPronostico() async {
     final uri = Uri.https('api.open-meteo.com', '/v1/forecast', {
       'latitude': '21.8853',
@@ -16,7 +20,9 @@ class ClimaRepository {
       'forecast_days': '7',
     });
 
-    final respuesta = await http.get(uri).timeout(const Duration(seconds: 15));
+    final respuesta = await _client
+        .get(uri)
+        .timeout(const Duration(seconds: 15));
 
     if (respuesta.statusCode != 200) {
       throw Exception('Error HTTP: ${respuesta.statusCode}');
@@ -48,5 +54,9 @@ class ClimaRepository {
         probabilidadLluvia: (lluvias[index] as num).toInt(),
       );
     });
+  }
+
+  void dispose() {
+    _client.close();
   }
 }

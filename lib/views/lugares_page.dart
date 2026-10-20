@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../repositories/lugares_repository.dart';
+import 'detalle_lugar_page.dart';
 
 class LugaresPage extends StatelessWidget {
   const LugaresPage({super.key});
@@ -25,6 +26,15 @@ class LugaresPage extends StatelessWidget {
               title: Text(lugar.nombre),
               subtitle: Text('${lugar.descripcion}\n${lugar.ubicacion}'),
               isThreeLine: true,
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetalleLugarPage(lugar: lugar),
+                  ),
+                );
+              },
             ),
           );
         },

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -109,6 +110,28 @@ void main() {
 
     try {
       await expectLater(repository.obtenerPronostico(), throwsException);
+    } finally {
+      repository.dispose();
+    }
+  });
+
+  test('Detecta cuando la API tarda demasiado', () async {
+    final solicitudPendiente = Completer<http.Response>();
+
+    final client = MockClient((request) {
+      return solicitudPendiente.future;
+    });
+
+    final repository = ClimaRepository(
+      client: client,
+      tiempoEspera: const Duration(milliseconds: 20),
+    );
+
+    try {
+      await expectLater(
+        repository.obtenerPronostico(),
+        throwsA(isA<TimeoutException>()),
+      );
     } finally {
       repository.dispose();
     }

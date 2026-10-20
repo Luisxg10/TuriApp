@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 
 import '../models/pronostico_dia.dart';
@@ -19,6 +21,16 @@ class ClimaViewModel extends ChangeNotifier {
 
     try {
       pronostico = await repository.obtenerPronostico();
+    } on TimeoutException {
+      pronostico = [];
+      error =
+          'La consulta tardó demasiado. '
+          'Inténtalo nuevamente.';
+    } on FormatException {
+      pronostico = [];
+      error =
+          'Los datos del clima no tienen '
+          'el formato esperado.';
     } catch (e) {
       pronostico = [];
       error =

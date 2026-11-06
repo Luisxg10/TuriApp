@@ -32,6 +32,20 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage/
+/android/local.properties
+/ios/Flutter/Generated.xcconfig
+/ios/Flutter/flutter_export_environment.sh
+
+# Local environment and credentials. Keep only templates such as .env.example.
+.env
+.env.*
+!.env.example
+**/service-account*.json
+**/*service-account*.json
+**/google-services-secret.json
+*.jks
+*.keystore
+key.properties
 
 # Symbolication related
 app.*.symbols

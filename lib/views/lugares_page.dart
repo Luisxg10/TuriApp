@@ -5,6 +5,7 @@ import '../repositories/lugares_repository.dart';
 import '../viewmodels/lugares_viewmodel.dart';
 import 'detalle_lugar_page.dart';
 import 'favoritos_page.dart';
+import 'itinerario_page.dart';
 
 class LugaresPage extends StatefulWidget {
   const LugaresPage({super.key});
@@ -42,6 +43,16 @@ class _LugaresPageState extends State<LugaresPage> {
       appBar: AppBar(
         title: const Text('Lugares turísticos'),
         actions: [
+          IconButton(
+            tooltip: 'Mi itinerario',
+            icon: const Icon(Icons.event_note),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ItinerarioPage()),
+              );
+            },
+          ),
           IconButton(
             tooltip: 'Mis favoritos',
             icon: const Icon(Icons.favorite),

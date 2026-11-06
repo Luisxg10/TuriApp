@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../app/dependencias.dart';
 import 'clima_page.dart';
 import '../models/lugar_turistico.dart';
 
@@ -104,6 +105,42 @@ class DetalleLugarPage extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               SelectableText(lugar.fuenteUrl),
+
+              const SizedBox(height: 24),
+              Center(
+                child: ElevatedButton.icon(
+                  onPressed: () async {
+                    final hoy = DateTime.now();
+                    final fecha = await showDatePicker(
+                      context: context,
+                      initialDate: hoy,
+                      firstDate: hoy,
+                      lastDate: DateTime(2100),
+                      helpText: 'Selecciona el día de tu visita',
+                      cancelText: 'Cancelar',
+                      confirmText: 'Guardar',
+                    );
+                    if (fecha == null || !context.mounted) return;
+
+                    final guardada = await itinerarioViewModel.programarVisita(
+                      lugar.id,
+                      fecha,
+                    );
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          guardada
+                              ? 'Visita agregada a tu itinerario.'
+                              : 'No se pudo guardar la visita.',
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.event_available),
+                  label: const Text('Planear visita'),
+                ),
+              ),
 
               const SizedBox(height: 32),
               Center(

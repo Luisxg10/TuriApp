@@ -9,11 +9,12 @@ TurisAGS es una aplicación móvil Flutter para explorar lugares turísticos de 
 - Filtro por categoría: plazas, jardines y museos.
 - Ilustración local para cada lugar en el catálogo y su ficha.
 - Favoritos con persistencia local entre sesiones.
+- Itinerario local de visitas con fecha, orden cronológico y opción para eliminar.
 - Pantalla de detalle con ubicación y coordenadas.
 - Pronóstico meteorológico y temperatura actual consultados por HTTP.
 - Manejo de carga, errores, reintento y caché temporal del clima.
 
-La app ya guarda favoritos en el dispositivo; autenticacion, perfiles, itinerarios y catalogo remoto siguen pendientes.
+La app guarda favoritos e itinerario en el dispositivo; autenticacion, perfiles y catalogo remoto siguen pendientes.
 
 ## Tecnologías
 

@@ -6,9 +6,51 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid == userId;
     }
 
+    function esAdministrador() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/administradores/$(request.auth.uid))
+        && get(/databases/$(database)/documents/administradores/$(request.auth.uid)).data.activo == true;
+    }
+
+    function lugarValido() {
+      let datos = request.resource.data;
+      return datos.keys().hasAll([
+          'nombre', 'descripcion', 'ubicacion', 'categoria',
+          'costoOrientativo', 'horario', 'fechaActualizacion',
+          'fuenteUrl', 'latitud', 'longitud'
+        ])
+        && datos.keys().hasOnly([
+          'nombre', 'descripcion', 'ubicacion', 'categoria',
+          'costoOrientativo', 'horario', 'fechaActualizacion',
+          'fuenteUrl', 'imagenAsset', 'imagenUrl',
+          'imagenStoragePath', 'latitud', 'longitud'
+        ])
+        && datos.nombre is string
+        && datos.descripcion is string
+        && datos.ubicacion is string
+        && datos.categoria is string
+        && datos.costoOrientativo is string
+        && datos.horario is string
+        && datos.fechaActualizacion is string
+        && datos.fuenteUrl is string
+        && datos.latitud is number
+        && datos.longitud is number
+        && ((('imagenUrl' in datos)
+                && datos.imagenUrl is string
+                && ('imagenStoragePath' in datos)
+                && datos.imagenStoragePath is string)
+            || (('imagenAsset' in datos) && datos.imagenAsset is string));
+    }
+
+    match /administradores/{userId} {
+      allow get: if esPropietario(userId);
+      allow list, create, update, delete: if false;
+    }
+
     match /lugares/{lugarId} {
       allow read: if true;
-      allow write: if false;
+      allow create, update: if esAdministrador() && lugarValido();
+      allow delete: if esAdministrador();
     }
 
     match /users/{userId}/favoritos/{lugarId} {

@@ -1,0 +1,23 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function esAdministrador() {
+      return request.auth != null
+        && firestore.exists(/databases/(default)/documents/administradores/$(request.auth.uid))
+        && firestore.get(/databases/(default)/documents/administradores/$(request.auth.uid)).data.activo == true;
+    }
+
+    match /lugares/{lugarId}/{nombreArchivo} {
+      allow read: if true;
+      allow create, update: if esAdministrador()
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/(jpeg|png|webp)');
+      allow delete: if esAdministrador();
+    }
+
+    match /{ruta=**} {
+      allow read, write: if false;
+    }
+  }
+}

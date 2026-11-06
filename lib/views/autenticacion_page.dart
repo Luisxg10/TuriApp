@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../repositories/autenticacion_repository.dart';
+import '../repositories/administracion_catalogo_repository.dart';
+import 'administracion_catalogo_page.dart';
 
 class AutenticacionPage extends StatefulWidget {
   const AutenticacionPage({super.key});
@@ -16,6 +18,7 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
   final _contrasenaController = TextEditingController();
   final _confirmacionController = TextEditingController();
   final _autenticacion = AutenticacionRepository();
+  final _administracionCatalogo = AdministracionCatalogoRepository();
 
   bool _esRegistro = false;
   bool _cargando = false;
@@ -142,7 +145,11 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.account_circle, size: 88, color: Color(0xFF008577)),
+            const Icon(
+              Icons.account_circle,
+              size: 88,
+              color: Color(0xFF008577),
+            ),
             const SizedBox(height: 16),
             const Text(
               'Sesión iniciada',
@@ -151,6 +158,28 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
             const SizedBox(height: 8),
             Text(usuario.email ?? 'Correo no disponible'),
             const SizedBox(height: 24),
+            FutureBuilder<bool>(
+              future: _administracionCatalogo.esAdministrador(usuario.uid),
+              builder: (context, snapshot) {
+                if (snapshot.data != true) return const SizedBox.shrink();
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const AdministracionCatalogoPage(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.admin_panel_settings_outlined),
+                    label: const Text('Administrar lugares'),
+                  ),
+                );
+              },
+            ),
             FilledButton.icon(
               onPressed: _cargando ? null : _cerrarSesion,
               icon: const Icon(Icons.logout),
@@ -173,7 +202,11 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Icon(Icons.travel_explore, size: 72, color: Color(0xFF008577)),
+                const Icon(
+                  Icons.travel_explore,
+                  size: 72,
+                  color: Color(0xFF008577),
+                ),
                 const SizedBox(height: 16),
                 Text(
                   _esRegistro ? 'Crear cuenta' : 'Iniciar sesión',

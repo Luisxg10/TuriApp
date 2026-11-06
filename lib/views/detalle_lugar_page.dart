@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../app/dependencias.dart';
 import 'clima_page.dart';
 import '../models/lugar_turistico.dart';
+import '../widgets/lugar_imagen.dart';
 
 class DetalleLugarPage extends StatelessWidget {
   final LugarTuristico lugar;
@@ -27,12 +28,10 @@ class DetalleLugarPage extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: Image.asset(
-                  lugar.imagenAsset,
+                child: LugarImagen(
+                  lugar: lugar,
                   width: double.infinity,
                   height: 210,
-                  fit: BoxFit.cover,
-                  semanticLabel: 'Ilustración de ${lugar.nombre}',
                 ),
               ),
               const SizedBox(height: 24),

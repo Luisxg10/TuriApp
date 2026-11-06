@@ -4,6 +4,7 @@ import '../app/dependencias.dart';
 import '../models/lugar_turistico.dart';
 import '../models/visita_planeada.dart';
 import '../repositories/lugares_repository.dart';
+import '../widgets/lugar_imagen.dart';
 import 'detalle_lugar_page.dart';
 
 class ItinerarioPage extends StatelessWidget {
@@ -102,12 +103,7 @@ class _TarjetaVisita extends StatelessWidget {
       child: ListTile(
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: Image.asset(
-            lugar.imagenAsset,
-            width: 64,
-            height: 64,
-            fit: BoxFit.cover,
-          ),
+          child: LugarImagen(lugar: lugar, width: 64, height: 64),
         ),
         title: Text(lugar.nombre),
         subtitle: Text(_formatearFecha(visita.fecha)),

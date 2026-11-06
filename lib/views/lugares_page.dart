@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../app/dependencias.dart';
 import '../viewmodels/lugares_viewmodel.dart';
+import '../widgets/lugar_imagen.dart';
 import 'detalle_lugar_page.dart';
 import 'favoritos_page.dart';
 import 'itinerario_page.dart';
@@ -158,13 +159,10 @@ class _LugaresPageState extends State<LugaresPage> {
                               child: ListTile(
                                 leading: ClipRRect(
                                   borderRadius: BorderRadius.circular(8),
-                                  child: Image.asset(
-                                    lugar.imagenAsset,
+                                  child: LugarImagen(
+                                    lugar: lugar,
                                     width: 72,
                                     height: 72,
-                                    fit: BoxFit.cover,
-                                    semanticLabel:
-                                        'Ilustración de ${lugar.nombre}',
                                   ),
                                 ),
                                 title: Text(lugar.nombre),

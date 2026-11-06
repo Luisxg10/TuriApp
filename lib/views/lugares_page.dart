@@ -193,8 +193,9 @@ class _LugaresPageState extends State<LugaresPage> {
                                                 : null,
                                           ),
                                           onPressed: () async {
-                                            if (favoritosViewModel.cargando)
+                                            if (favoritosViewModel.cargando) {
                                               return;
+                                            }
                                             final guardado =
                                                 await favoritosViewModel
                                                     .alternarFavorito(lugar.id);

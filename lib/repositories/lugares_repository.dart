@@ -16,20 +16,24 @@ class CatalogoLugares {
 }
 
 class LugaresRepository {
-  LugaresRepository({FirebaseFirestore? firestore}) : _firestore = firestore;
+  const LugaresRepository({this.firestore});
 
-  final FirebaseFirestore? _firestore;
-  Future<CatalogoLugares>? _cargaEnCurso;
+  final FirebaseFirestore? firestore;
+  static final _cargas = Expando<Future<CatalogoLugares>>();
 
   Future<CatalogoLugares> cargarLugares({bool actualizar = false}) {
-    if (actualizar || _cargaEnCurso == null) {
-      _cargaEnCurso = _cargarDesdeFirestore();
+    var carga = _cargas[this];
+    if (actualizar || carga == null) {
+      carga = _cargarDesdeFirestore();
+      _cargas[this] = carga;
     }
-    return _cargaEnCurso!;
+    return carga;
   }
 
+  List<LugarTuristico> obtenerLugares() => obtenerLugaresLocales();
+
   Future<CatalogoLugares> _cargarDesdeFirestore() async {
-    if (Firebase.apps.isEmpty && _firestore == null) {
+    if (Firebase.apps.isEmpty && firestore == null) {
       return CatalogoLugares(
         lugares: obtenerLugaresLocales(),
         esLocal: true,
@@ -38,7 +42,7 @@ class LugaresRepository {
     }
 
     try {
-      final baseDeDatos = _firestore ?? FirebaseFirestore.instance;
+      final baseDeDatos = firestore ?? FirebaseFirestore.instance;
       final documentos = await baseDeDatos
           .collection('lugares')
           .orderBy('nombre')

@@ -36,6 +36,9 @@ class LugaresViewModel extends ChangeNotifier {
     if (!_disposed) notifyListeners();
   }
 
+  List<LugarTuristico> obtenerLugares() =>
+      lugares.isEmpty ? repository.obtenerLugares() : lugares;
+
   List<String> obtenerCategorias() {
     final categorias = lugares.map((lugar) => lugar.categoria).toSet().toList()
       ..sort();

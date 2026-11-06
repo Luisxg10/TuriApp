@@ -14,13 +14,14 @@ TurisAGS es una aplicación móvil Flutter para explorar lugares turísticos de 
 - Pronóstico meteorológico y temperatura actual consultados por HTTP.
 - Manejo de carga, errores, reintento y caché temporal del clima.
 
-La app guarda favoritos e itinerario en el dispositivo; autenticacion, perfiles y catalogo remoto siguen pendientes.
+La app permite crear una cuenta, iniciar y cerrar sesión, y solicitar restablecimiento de contraseña mediante Firebase Authentication. Favoritos e itinerario todavía se guardan localmente en el dispositivo; la sincronización por cuenta con Firestore queda como siguiente etapa.
 
 ## Tecnologías
 
 - Flutter y Dart.
 - `http` para consumir Open-Meteo Forecast API.
 - `shared_preferences` para guardar los favoritos en el dispositivo.
+- `firebase_core` y `firebase_auth` para inicializar Firebase y autenticar usuarios con correo y contraseña.
 - Pruebas automatizadas con `flutter_test` y `http/testing.dart`.
 - Arquitectura organizada en modelos, vistas, ViewModels y repositorios.
 
@@ -58,7 +59,7 @@ El permiso `INTERNET` de Android está declarado en `android/app/src/main/Androi
 
 La consulta actual usa Open-Meteo (`https://api.open-meteo.com/v1/forecast`) y no requiere una clave ni variables de entorno. Las coordenadas del catálogo se mantienen en `lib/repositories/lugares_repository.dart`.
 
-Firebase está descrito como parte del alcance futuro, pero aún no está configurado en esta versión. Cuando se agregue, documentaremos los pasos para configurar el proyecto y las variables necesarias. No publiques contraseñas, tokens, claves privadas, archivos de cuentas de servicio ni keystores. Los archivos locales se excluyen en `.gitignore`; si una herramienta requiere configuración cliente, comparte solo la configuración pública que esa herramienta indique y conserva las reglas de seguridad del servicio.
+Firebase se configura con FlutterFire. El archivo `lib/firebase_options.dart` contiene identificadores de configuración de cliente y no sustituye las reglas de seguridad del proyecto. Para conectar una instalación local, instala Firebase CLI y FlutterFire CLI, inicia sesión y ejecuta `flutterfire configure --project=turisags-2392c`; selecciona Android. La app inicia Firebase en `lib/main.dart`. En Firebase Console habilita Authentication con el proveedor **Correo electrónico/contraseña**. No se requieren variables de entorno para este flujo. No publiques contraseñas, tokens, claves privadas, archivos de cuentas de servicio ni keystores.
 
 ## Organización del código
 
@@ -66,7 +67,7 @@ Firebase está descrito como parte del alcance futuro, pero aún no está config
 lib/
   app/           configuración de la aplicación
   models/        modelos de dominio y datos
-  repositories/  acceso a datos locales, HTTP y favoritos
+  repositories/  acceso a datos locales, HTTP, autenticación y favoritos
   viewmodels/    lógica de presentación y selección de datos
   views/         pantallas Flutter
 test/            pruebas automatizadas
@@ -97,5 +98,5 @@ Registra cada incremento con un commit que describa el cambio, por ejemplo:
 
 ```bash
 git add lib README.md .gitignore
-git commit -m "feat: add catalog search and category filters"
+git commit -m "feat: agregar autenticación con Firebase"
 ```

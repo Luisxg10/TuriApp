@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'autenticacion_page.dart';
 import 'clima_page.dart';
 import 'lugares_page.dart';
 
@@ -14,6 +15,20 @@ class InicioPage extends StatelessWidget {
         centerTitle: true,
         backgroundColor: const Color(0xFF008577),
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            tooltip: 'Mi cuenta',
+            icon: const Icon(Icons.account_circle_outlined),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AutenticacionPage(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Center(
         child: Padding(

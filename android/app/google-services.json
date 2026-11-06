@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "830857753788",
+    "project_id": "turisags-2392c",
+    "storage_bucket": "turisags-2392c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:830857753788:android:9455dbdcf90f4f62988cb9",
+        "android_client_info": {
+          "package_name": "com.example.turisags"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_ARYbTIJ-LJ1zN4UEyVTxJwLM5KrNHvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

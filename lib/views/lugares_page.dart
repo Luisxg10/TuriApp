@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../app/dependencias.dart';
 import '../repositories/lugares_repository.dart';
 import '../viewmodels/lugares_viewmodel.dart';
 import 'detalle_lugar_page.dart';
+import 'favoritos_page.dart';
 
 class LugaresPage extends StatefulWidget {
   const LugaresPage({super.key});
@@ -37,7 +39,21 @@ class _LugaresPageState extends State<LugaresPage> {
     );
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Lugares turísticos')),
+      appBar: AppBar(
+        title: const Text('Lugares turísticos'),
+        actions: [
+          IconButton(
+            tooltip: 'Mis favoritos',
+            icon: const Icon(Icons.favorite),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const FavoritosPage()),
+              );
+            },
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Padding(
@@ -110,7 +126,45 @@ class _LugaresPageState extends State<LugaresPage> {
                             '${lugar.categoria} · ${lugar.descripcion}\n${lugar.ubicacion}',
                           ),
                           isThreeLine: true,
-                          trailing: const Icon(Icons.arrow_forward_ios),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              AnimatedBuilder(
+                                animation: favoritosViewModel,
+                                builder: (context, child) {
+                                  final esFavorito = favoritosViewModel
+                                      .esFavorito(lugar.id);
+                                  return IconButton(
+                                    tooltip: esFavorito
+                                        ? 'Quitar de favoritos'
+                                        : 'Agregar a favoritos',
+                                    icon: Icon(
+                                      esFavorito
+                                          ? Icons.favorite
+                                          : Icons.favorite_border,
+                                      color: esFavorito ? Colors.red : null,
+                                    ),
+                                    onPressed: () async {
+                                      if (favoritosViewModel.cargando) return;
+                                      final guardado = await favoritosViewModel
+                                          .alternarFavorito(lugar.id);
+                                      if (!guardado && context.mounted) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                  'No se pudo guardar el favorito.',
+                                                ),
+                                              ),
+                                            );
+                                      }
+                                    },
+                                  );
+                                },
+                              ),
+                              const Icon(Icons.arrow_forward_ios),
+                            ],
+                          ),
                           onTap: () {
                             Navigator.push(
                               context,

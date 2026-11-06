@@ -1,12 +1,26 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
+import 'dependencias.dart';
 import '../repositories/clima_repository.dart';
 import '../views/inicio_page.dart';
 
 final climaRepository = ClimaRepository();
 
-class TurisAGSApp extends StatelessWidget {
+class TurisAGSApp extends StatefulWidget {
   const TurisAGSApp({super.key});
+
+  @override
+  State<TurisAGSApp> createState() => _TurisAGSAppState();
+}
+
+class _TurisAGSAppState extends State<TurisAGSApp> {
+  @override
+  void initState() {
+    super.initState();
+    unawaited(favoritosViewModel.cargarFavoritos());
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -8,16 +8,18 @@ TurisAGS es una aplicación móvil Flutter para explorar lugares turísticos de 
 - Búsqueda por nombre, descripción y ubicación.
 - Filtro por categoría: plazas, jardines y museos.
 - Ilustración local para cada lugar en el catálogo y su ficha.
+- Favoritos con persistencia local entre sesiones.
 - Pantalla de detalle con ubicación y coordenadas.
 - Pronóstico meteorológico y temperatura actual consultados por HTTP.
 - Manejo de carga, errores, reintento y caché temporal del clima.
 
-La aplicación todavía no incluye autenticación, perfiles, favoritos, itinerarios ni catálogo remoto. Esas funciones pertenecen a etapas posteriores del proyecto.
+La app ya guarda favoritos en el dispositivo; autenticacion, perfiles, itinerarios y catalogo remoto siguen pendientes.
 
 ## Tecnologías
 
 - Flutter y Dart.
 - `http` para consumir Open-Meteo Forecast API.
+- `shared_preferences` para guardar los favoritos en el dispositivo.
 - Pruebas automatizadas con `flutter_test` y `http/testing.dart`.
 - Arquitectura organizada en modelos, vistas, ViewModels y repositorios.
 
@@ -63,7 +65,7 @@ Firebase está descrito como parte del alcance futuro, pero aún no está config
 lib/
   app/           configuración de la aplicación
   models/        modelos de dominio y datos
-  repositories/  acceso a datos locales y servicios HTTP
+  repositories/  acceso a datos locales, HTTP y favoritos
   viewmodels/    lógica de presentación y selección de datos
   views/         pantallas Flutter
 test/            pruebas automatizadas

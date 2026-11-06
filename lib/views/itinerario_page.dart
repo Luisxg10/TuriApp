@@ -11,41 +11,49 @@ class ItinerarioPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lugares = const LugaresRepository().obtenerLugares();
-    final lugaresPorId = {for (final lugar in lugares) lugar.id: lugar};
-
     return Scaffold(
       appBar: AppBar(title: const Text('Mi itinerario')),
-      body: AnimatedBuilder(
-        animation: itinerarioViewModel,
-        builder: (context, child) {
-          if (itinerarioViewModel.cargando) {
+      body: FutureBuilder<CatalogoLugares>(
+        future: lugaresRepository.cargarLugares(),
+        builder: (context, catalogoSnapshot) {
+          if (!catalogoSnapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          final visitas = itinerarioViewModel.visitas
-              .where((visita) => lugaresPorId.containsKey(visita.lugarId))
-              .toList();
+          final lugares = catalogoSnapshot.data!.lugares;
+          final lugaresPorId = {for (final lugar in lugares) lugar.id: lugar};
+          return AnimatedBuilder(
+            animation: itinerarioViewModel,
+            builder: (context, child) {
+              if (itinerarioViewModel.cargando) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-          if (visitas.isEmpty) {
-            return const Center(
-              child: Padding(
-                padding: EdgeInsets.all(24),
-                child: Text(
-                  'Aún no tienes visitas planeadas. Abre un lugar y toca “Planear visita”.',
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            );
-          }
+              final visitas = itinerarioViewModel.visitas
+                  .where((visita) => lugaresPorId.containsKey(visita.lugarId))
+                  .toList();
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: visitas.length,
-            itemBuilder: (context, index) {
-              final visita = visitas[index];
-              final lugar = lugaresPorId[visita.lugarId]!;
-              return _TarjetaVisita(visita: visita, lugar: lugar);
+              if (visitas.isEmpty) {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(24),
+                    child: Text(
+                      'Aún no tienes visitas planeadas. Abre un lugar y toca “Planear visita”.',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              }
+
+              return ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: visitas.length,
+                itemBuilder: (context, index) {
+                  final visita = visitas[index];
+                  final lugar = lugaresPorId[visita.lugarId]!;
+                  return _TarjetaVisita(visita: visita, lugar: lugar);
+                },
+              );
             },
           );
         },

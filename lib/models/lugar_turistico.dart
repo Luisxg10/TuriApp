@@ -26,4 +26,38 @@ class LugarTuristico {
     required this.latitud,
     required this.longitud,
   });
+
+  factory LugarTuristico.fromFirestore(
+    String documentId,
+    Map<String, dynamic> data,
+  ) {
+    return LugarTuristico(
+      id: documentId,
+      nombre: data['nombre'] as String,
+      descripcion: data['descripcion'] as String,
+      ubicacion: data['ubicacion'] as String,
+      categoria: data['categoria'] as String,
+      costoOrientativo: data['costoOrientativo'] as String,
+      horario: data['horario'] as String,
+      fechaActualizacion: DateTime.parse(data['fechaActualizacion'] as String),
+      fuenteUrl: data['fuenteUrl'] as String,
+      imagenAsset: data['imagenAsset'] as String,
+      latitud: (data['latitud'] as num).toDouble(),
+      longitud: (data['longitud'] as num).toDouble(),
+    );
+  }
+
+  Map<String, dynamic> toFirestore() => {
+    'nombre': nombre,
+    'descripcion': descripcion,
+    'ubicacion': ubicacion,
+    'categoria': categoria,
+    'costoOrientativo': costoOrientativo,
+    'horario': horario,
+    'fechaActualizacion': fechaActualizacion.toIso8601String().split('T').first,
+    'fuenteUrl': fuenteUrl,
+    'imagenAsset': imagenAsset,
+    'latitud': latitud,
+    'longitud': longitud,
+  };
 }

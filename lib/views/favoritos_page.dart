@@ -10,39 +10,46 @@ class FavoritosPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lugares = const LugaresRepository().obtenerLugares();
-
     return Scaffold(
       appBar: AppBar(title: const Text('Mis lugares favoritos')),
-      body: AnimatedBuilder(
-        animation: favoritosViewModel,
-        builder: (context, child) {
-          if (favoritosViewModel.cargando) {
+      body: FutureBuilder<CatalogoLugares>(
+        future: lugaresRepository.cargarLugares(),
+        builder: (context, catalogoSnapshot) {
+          if (!catalogoSnapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          final favoritos = lugares
-              .where((lugar) => favoritosViewModel.esFavorito(lugar.id))
-              .toList();
+          final lugares = catalogoSnapshot.data!.lugares;
+          return AnimatedBuilder(
+            animation: favoritosViewModel,
+            builder: (context, child) {
+              if (favoritosViewModel.cargando) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-          if (favoritos.isEmpty) {
-            return const Center(
-              child: Padding(
-                padding: EdgeInsets.all(24),
-                child: Text(
-                  'Aún no tienes favoritos. Usa el corazón en el catálogo para guardar un lugar.',
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            );
-          }
+              final favoritos = lugares
+                  .where((lugar) => favoritosViewModel.esFavorito(lugar.id))
+                  .toList();
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: favoritos.length,
-            itemBuilder: (context, index) => _TarjetaFavorito(
-              lugar: favoritos[index],
-            ),
+              if (favoritos.isEmpty) {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(24),
+                    child: Text(
+                      'Aún no tienes favoritos. Usa el corazón en el catálogo para guardar un lugar.',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              }
+
+              return ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: favoritos.length,
+                itemBuilder: (context, index) =>
+                    _TarjetaFavorito(lugar: favoritos[index]),
+              );
+            },
           );
         },
       ),
@@ -83,10 +90,14 @@ class _TarjetaFavorito extends StatelessWidget {
           tooltip: 'Quitar de favoritos',
           icon: const Icon(Icons.favorite, color: Colors.red),
           onPressed: () async {
-            final guardado = await favoritosViewModel.alternarFavorito(lugar.id);
+            final guardado = await favoritosViewModel.alternarFavorito(
+              lugar.id,
+            );
             if (!guardado && context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('No se pudo actualizar favoritos.')),
+                const SnackBar(
+                  content: Text('No se pudo actualizar favoritos.'),
+                ),
               );
             }
           },

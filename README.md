@@ -1,15 +1,16 @@
 # TurisAGS
 
-TurisAGS es una aplicación móvil Flutter para explorar lugares turísticos de Aguascalientes y consultar el clima de la ciudad o de un lugar seleccionado. El catálogo de esta etapa usa datos locales de ejemplo; el clima se obtiene de Open-Meteo.
+TurisAGS es una aplicación móvil Flutter para explorar lugares turísticos de Aguascalientes y consultar el clima de la ciudad o de un lugar seleccionado. El catálogo se consulta desde Cloud Firestore y conserva datos locales de ejemplo como respaldo; el clima se obtiene de Open-Meteo.
 
 ## Estado actual
 
 - Inicio y navegación al catálogo.
+- Lectura del catálogo desde Firestore, con respaldo local si la colección remota aún no está cargada o no hay conexión.
 - Búsqueda por nombre, descripción y ubicación.
 - Filtro por categoría: plazas, jardines y museos.
 - Ilustración local para cada lugar en el catálogo y su ficha.
-- Favoritos con persistencia local entre sesiones.
-- Itinerario local de visitas con fecha, orden cronológico y opción para eliminar.
+- Favoritos locales para visitantes sin sesión y sincronizados en Firestore para usuarios autenticados.
+- Itinerario con fecha, orden cronológico y opción para eliminar; local sin sesión y sincronizado en Firestore con cuenta.
 - Pantalla de detalle con ubicación y coordenadas.
 - Pronóstico meteorológico y temperatura actual consultados por HTTP.
 - Manejo de carga, errores, reintento y caché temporal del clima.
@@ -58,7 +59,7 @@ El permiso `INTERNET` de Android está declarado en `android/app/src/main/Androi
 
 ## Configuración de servicios y variables
 
-La consulta actual usa Open-Meteo (`https://api.open-meteo.com/v1/forecast`) y no requiere una clave ni variables de entorno. Las coordenadas del catálogo se mantienen en `lib/repositories/lugares_repository.dart`.
+La consulta actual usa Open-Meteo (`https://api.open-meteo.com/v1/forecast`) y no requiere una clave ni variables de entorno. Los datos locales de respaldo están en `lib/repositories/lugares_repository.dart`.
 
 Firebase se configura con FlutterFire. El archivo `lib/firebase_options.dart` contiene identificadores de configuración de cliente y no sustituye las reglas de seguridad del proyecto. Para conectar una instalación local, instala Firebase CLI y FlutterFire CLI, inicia sesión y ejecuta `flutterfire configure --project=turisags-2392c`; selecciona Android. La app inicia Firebase en `lib/main.dart`. En Firebase Console habilita Authentication con el proveedor **Correo electrónico/contraseña**.
 
@@ -68,7 +69,7 @@ Para habilitar la sincronización, crea una base de datos **Cloud Firestore** en
 firebase deploy --only firestore:rules --project=turisags-2392c
 ```
 
-Las reglas limitan lectura y escritura al usuario autenticado bajo `users/{uid}/favoritos` y `users/{uid}/itinerario`. Revisa esas reglas antes de ampliar los datos o publicar la aplicación. No abras la base de datos a todos los usuarios. No se requieren variables de entorno para esta configuración cliente. No publiques contraseñas, tokens, claves privadas, archivos de cuentas de servicio ni keystores.
+Las reglas permiten lectura pública de `lugares/{lugarId}` y limitan lectura y escritura al usuario autenticado bajo `users/{uid}/favoritos` y `users/{uid}/itinerario`. La colección `lugares` debe contener documentos cuyos IDs sean los IDs del catálogo local (`1`, `2`, `3`) y los campos `nombre`, `descripcion`, `ubicacion`, `categoria`, `costoOrientativo`, `horario`, `fechaActualizacion` (texto `AAAA-MM-DD`), `fuenteUrl`, `imagenAsset`, `latitud` y `longitud`. Las ilustraciones siguen almacenadas dentro de la app; `imagenAsset` debe conservar la ruta del asset local. Después de crear o cambiar los documentos, usa el botón de actualizar del catálogo. Por ahora, las reglas niegan la escritura a todos en la colección pública; la administración se añadirá en el siguiente incremento.
 
 ## Organización del código
 

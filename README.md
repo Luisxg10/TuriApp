@@ -7,6 +7,7 @@ TurisAGS es una aplicación móvil Flutter para explorar lugares turísticos de 
 - Inicio y navegación al catálogo.
 - Búsqueda por nombre, descripción y ubicación.
 - Filtro por categoría: plazas, jardines y museos.
+- Ilustración local para cada lugar en el catálogo y su ficha.
 - Pantalla de detalle con ubicación y coordenadas.
 - Pronóstico meteorológico y temperatura actual consultados por HTTP.
 - Manejo de carga, errores, reintento y caché temporal del clima.
@@ -66,7 +67,10 @@ lib/
   viewmodels/    lógica de presentación y selección de datos
   views/         pantallas Flutter
 test/            pruebas automatizadas
+assets/images/   ilustraciones locales del catálogo
 ```
+
+Las imágenes del catálogo son ilustraciones generadas para la interfaz, no fotografías oficiales de los sitios. Se cargan localmente desde `assets/images/` y están declaradas en `pubspec.yaml`.
 
 La vista de catálogo lee el texto y la categoría seleccionada, el ViewModel aplica esos criterios a los lugares del repositorio y la vista presenta los resultados o el estado vacío.
 

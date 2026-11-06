@@ -17,6 +17,7 @@ class LugaresRepository {
         fechaActualizacion: DateTime(2026, 11, 5),
         fuenteUrl:
             'https://www.ags.gob.mx/turismo/conocemas/exedra/index.html',
+        imagenAsset: 'assets/images/plaza_patria.jpg',
         latitud: 21.963585041386942,
         longitud: -102.3441541226031,
       ),
@@ -31,6 +32,7 @@ class LugaresRepository {
         fechaActualizacion: DateTime(2026, 11, 5),
         fuenteUrl:
             'https://www.ags.gob.mx/turismo/conocemas/jardinsanmarcos/index.html',
+        imagenAsset: 'assets/images/jardin_san_marcos.jpg',
         latitud: 21.87971010830155,
         longitud: -102.30279112212934,
       ),
@@ -46,6 +48,7 @@ class LugaresRepository {
         fechaActualizacion: DateTime(2026, 11, 5),
         fuenteUrl:
             'https://www.ags.gob.mx/turismo/conocemas/museodelamuerte/index.html',
+        imagenAsset: 'assets/images/museo_muerte.jpg',
         latitud: 21.883948329694125,
         longitud: -102.29546186200008,
       ),

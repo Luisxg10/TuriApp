@@ -24,11 +24,14 @@ class DetalleLugarPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Center(
-                child: Icon(
-                  Icons.landscape,
-                  size: 120,
-                  color: Color(0xFF008577),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.asset(
+                  lugar.imagenAsset,
+                  width: double.infinity,
+                  height: 210,
+                  fit: BoxFit.cover,
+                  semanticLabel: 'Ilustración de ${lugar.nombre}',
                 ),
               ),
               const SizedBox(height: 24),

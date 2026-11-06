@@ -95,9 +95,15 @@ class _LugaresPageState extends State<LugaresPage> {
                       return Card(
                         margin: const EdgeInsets.only(bottom: 12),
                         child: ListTile(
-                          leading: const Icon(
-                            Icons.place,
-                            color: Color(0xFF008577),
+                          leading: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.asset(
+                              lugar.imagenAsset,
+                              width: 72,
+                              height: 72,
+                              fit: BoxFit.cover,
+                              semanticLabel: 'Ilustración de ${lugar.nombre}',
+                            ),
                           ),
                           title: Text(lugar.nombre),
                           subtitle: Text(

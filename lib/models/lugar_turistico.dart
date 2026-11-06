@@ -8,6 +8,7 @@ class LugarTuristico {
   final String horario;
   final DateTime fechaActualizacion;
   final String fuenteUrl;
+  final String imagenAsset;
   final double latitud;
   final double longitud;
 
@@ -21,6 +22,7 @@ class LugarTuristico {
     required this.horario,
     required this.fechaActualizacion,
     required this.fuenteUrl,
+    required this.imagenAsset,
     required this.latitud,
     required this.longitud,
   });

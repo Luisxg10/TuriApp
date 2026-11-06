@@ -6,10 +6,6 @@ void main() {
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(const TurisAGSApp());
-
-    expect(find.text('Bienvenido a TurisAGS'), findsOneWidget);
-
-    await tester.tap(find.text('Explorar lugares'));
     await tester.pumpAndSettle();
 
     expect(find.text('Lugares turísticos'), findsOneWidget);

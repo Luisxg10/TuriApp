@@ -3,11 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../app/dependencias.dart';
+import '../utils/exigir_sesion.dart';
 import '../viewmodels/lugares_viewmodel.dart';
 import '../widgets/lugar_imagen.dart';
 import 'detalle_lugar_page.dart';
 import 'favoritos_page.dart';
 import 'itinerario_page.dart';
+import 'autenticacion_page.dart';
+import 'clima_page.dart';
 
 class LugaresPage extends StatefulWidget {
   const LugaresPage({super.key});
@@ -54,31 +57,62 @@ class _LugaresPageState extends State<LugaresPage> {
         title: const Text('Lugares turísticos'),
         actions: [
           IconButton(
-            tooltip: 'Actualizar catálogo',
-            icon: const Icon(Icons.refresh),
-            onPressed: viewModel.cargando
-                ? null
-                : () => unawaited(viewModel.cargarLugares(actualizar: true)),
+            tooltip: 'Consultar clima general',
+            icon: const Icon(Icons.cloud_outlined),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ClimaPage()),
+            ),
           ),
           IconButton(
-            tooltip: 'Mi itinerario',
-            icon: const Icon(Icons.event_note),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ItinerarioPage()),
-              );
-            },
+            tooltip: 'Mi cuenta',
+            icon: const Icon(Icons.account_circle_outlined),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AutenticacionPage()),
+            ),
           ),
-          IconButton(
-            tooltip: 'Mis favoritos',
-            icon: const Icon(Icons.favorite),
-            onPressed: () {
-              Navigator.push(
+          PopupMenuButton<String>(
+            tooltip: 'Más opciones',
+            onSelected: (opcion) async {
+              if (opcion == 'actualizar') {
+                if (!viewModel.cargando) {
+                  await viewModel.cargarLugares(actualizar: true);
+                }
+                return;
+              }
+              if (!await exigirSesion(context) || !context.mounted) return;
+              final pagina = opcion == 'itinerario'
+                  ? const ItinerarioPage()
+                  : const FavoritosPage();
+              await Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const FavoritosPage()),
+                MaterialPageRoute(builder: (_) => pagina),
               );
             },
+            itemBuilder: (_) => const [
+              PopupMenuItem(
+                value: 'actualizar',
+                child: ListTile(
+                  leading: Icon(Icons.refresh),
+                  title: Text('Actualizar catálogo'),
+                ),
+              ),
+              PopupMenuItem(
+                value: 'itinerario',
+                child: ListTile(
+                  leading: Icon(Icons.event_note),
+                  title: Text('Mi itinerario'),
+                ),
+              ),
+              PopupMenuItem(
+                value: 'favoritos',
+                child: ListTile(
+                  leading: Icon(Icons.favorite_border),
+                  title: Text('Mis favoritos'),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -176,8 +210,11 @@ class _LugaresPageState extends State<LugaresPage> {
                                     AnimatedBuilder(
                                       animation: favoritosViewModel,
                                       builder: (context, child) {
-                                        final esFavorito = favoritosViewModel
-                                            .esFavorito(lugar.id);
+                                        final esFavorito =
+                                            haySesionIniciada &&
+                                            favoritosViewModel.esFavorito(
+                                              lugar.id,
+                                            );
                                         return IconButton(
                                           tooltip: esFavorito
                                               ? 'Quitar de favoritos'
@@ -192,6 +229,10 @@ class _LugaresPageState extends State<LugaresPage> {
                                           ),
                                           onPressed: () async {
                                             if (favoritosViewModel.cargando) {
+                                              return;
+                                            }
+                                            if (!await exigirSesion(context) ||
+                                                !context.mounted) {
                                               return;
                                             }
                                             final guardado =

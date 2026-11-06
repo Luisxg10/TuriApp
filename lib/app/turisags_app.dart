@@ -7,7 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'dependencias.dart';
 import '../repositories/clima_repository.dart';
-import '../views/inicio_page.dart';
+import '../views/lugares_page.dart';
 
 final climaRepository = ClimaRepository();
 
@@ -28,7 +28,9 @@ class _TurisAGSAppState extends State<TurisAGSApp> {
       unawaited(favoritosViewModel.cargarFavoritos());
       unawaited(itinerarioViewModel.cargarVisitas());
     } else {
-      _suscripcionDeSesion = FirebaseAuth.instance.authStateChanges().listen((_) {
+      _suscripcionDeSesion = FirebaseAuth.instance.authStateChanges().listen((
+        _,
+      ) {
         unawaited(favoritosViewModel.cargarFavoritos());
         unawaited(itinerarioViewModel.cargarVisitas());
       });
@@ -53,7 +55,7 @@ class _TurisAGSAppState extends State<TurisAGSApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF008577)),
         useMaterial3: true,
       ),
-      home: const InicioPage(),
+      home: const LugaresPage(),
     );
   }
 }

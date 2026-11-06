@@ -161,6 +161,15 @@ class _AutenticacionPageState extends State<AutenticacionPage> {
             FutureBuilder<bool>(
               future: _administracionCatalogo.esAdministrador(usuario.uid),
               builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Padding(
+                    padding: EdgeInsets.only(bottom: 12),
+                    child: SizedBox.square(
+                      dimension: 24,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  );
+                }
                 if (snapshot.data != true) return const SizedBox.shrink();
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),

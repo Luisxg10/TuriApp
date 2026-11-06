@@ -9,8 +9,6 @@ class LugarTuristico {
   final DateTime fechaActualizacion;
   final String fuenteUrl;
   final String? imagenAsset;
-  final String? imagenUrl;
-  final String? imagenStoragePath;
   final double latitud;
   final double longitud;
 
@@ -25,8 +23,6 @@ class LugarTuristico {
     required this.fechaActualizacion,
     required this.fuenteUrl,
     this.imagenAsset,
-    this.imagenUrl,
-    this.imagenStoragePath,
     required this.latitud,
     required this.longitud,
   });
@@ -44,10 +40,8 @@ class LugarTuristico {
       costoOrientativo: data['costoOrientativo'] as String,
       horario: data['horario'] as String,
       fechaActualizacion: DateTime.parse(data['fechaActualizacion'] as String),
-      fuenteUrl: data['fuenteUrl'] as String,
+      fuenteUrl: data['fuenteUrl'] as String? ?? '',
       imagenAsset: data['imagenAsset'] as String?,
-      imagenUrl: data['imagenUrl'] as String?,
-      imagenStoragePath: data['imagenStoragePath'] as String?,
       latitud: (data['latitud'] as num).toDouble(),
       longitud: (data['longitud'] as num).toDouble(),
     );
@@ -61,10 +55,8 @@ class LugarTuristico {
     'costoOrientativo': costoOrientativo,
     'horario': horario,
     'fechaActualizacion': fechaActualizacion.toIso8601String().split('T').first,
-    'fuenteUrl': fuenteUrl,
+    if (fuenteUrl.isNotEmpty) 'fuenteUrl': fuenteUrl,
     if (imagenAsset != null) 'imagenAsset': imagenAsset,
-    if (imagenUrl != null) 'imagenUrl': imagenUrl,
-    if (imagenStoragePath != null) 'imagenStoragePath': imagenStoragePath,
     'latitud': latitud,
     'longitud': longitud,
   };

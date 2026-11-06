@@ -17,13 +17,12 @@ service cloud.firestore {
       return datos.keys().hasAll([
           'nombre', 'descripcion', 'ubicacion', 'categoria',
           'costoOrientativo', 'horario', 'fechaActualizacion',
-          'fuenteUrl', 'latitud', 'longitud'
+          'latitud', 'longitud'
         ])
         && datos.keys().hasOnly([
           'nombre', 'descripcion', 'ubicacion', 'categoria',
           'costoOrientativo', 'horario', 'fechaActualizacion',
-          'fuenteUrl', 'imagenAsset', 'imagenUrl',
-          'imagenStoragePath', 'latitud', 'longitud'
+          'fuenteUrl', 'imagenAsset', 'latitud', 'longitud'
         ])
         && datos.nombre is string
         && datos.descripcion is string
@@ -32,14 +31,11 @@ service cloud.firestore {
         && datos.costoOrientativo is string
         && datos.horario is string
         && datos.fechaActualizacion is string
-        && datos.fuenteUrl is string
+        && (!('fuenteUrl' in datos) || datos.fuenteUrl is string)
         && datos.latitud is number
         && datos.longitud is number
-        && ((('imagenUrl' in datos)
-                && datos.imagenUrl is string
-                && ('imagenStoragePath' in datos)
-                && datos.imagenStoragePath is string)
-            || (('imagenAsset' in datos) && datos.imagenAsset is string));
+        && ('imagenAsset' in datos)
+        && datos.imagenAsset is string;
     }
 
     match /administradores/{userId} {

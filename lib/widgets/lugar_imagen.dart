@@ -19,22 +19,6 @@ class LugarImagen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final etiqueta = 'Imagen de ${lugar.nombre}';
-    final url = lugar.imagenUrl;
-    if (url != null && url.isNotEmpty) {
-      return Image.network(
-        url,
-        width: width,
-        height: height,
-        fit: fit,
-        semanticLabel: etiqueta,
-        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-          if (wasSynchronouslyLoaded || frame != null) return child;
-          return _marcador(context);
-        },
-        errorBuilder: (context, error, stackTrace) => _marcador(context),
-      );
-    }
-
     final asset = lugar.imagenAsset;
     if (asset != null && asset.isNotEmpty) {
       return Image.asset(

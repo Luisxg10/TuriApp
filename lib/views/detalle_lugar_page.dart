@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../app/dependencias.dart';
+import '../utils/exigir_sesion.dart';
 import 'clima_page.dart';
 import '../models/lugar_turistico.dart';
 import '../widgets/lugar_imagen.dart';
@@ -98,17 +99,21 @@ class DetalleLugarPage extends StatelessWidget {
                 contenido: formatearFecha(lugar.fechaActualizacion),
                 icono: Icons.update,
               ),
-              const Text(
-                'Fuente oficial',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 4),
-              SelectableText(lugar.fuenteUrl),
-
-              const SizedBox(height: 24),
+              if (lugar.fuenteUrl.isNotEmpty) ...[
+                const Text(
+                  'Fuente oficial',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4),
+                SelectableText(lugar.fuenteUrl),
+                const SizedBox(height: 24),
+              ],
               Center(
                 child: ElevatedButton.icon(
                   onPressed: () async {
+                    if (!await exigirSesion(context) || !context.mounted) {
+                      return;
+                    }
                     final hoy = DateTime.now();
                     final fecha = await showDatePicker(
                       context: context,

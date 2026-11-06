@@ -8,6 +8,12 @@ class DetalleLugarPage extends StatelessWidget {
 
   const DetalleLugarPage({super.key, required this.lugar});
 
+  String formatearFecha(DateTime fecha) {
+    final dia = fecha.day.toString().padLeft(2, '0');
+    final mes = fecha.month.toString().padLeft(2, '0');
+    return '$dia/$mes/${fecha.year}';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,6 +74,34 @@ class DetalleLugarPage extends StatelessWidget {
                 ],
               ),
 
+              const SizedBox(height: 24),
+              _SeccionDetalle(
+                titulo: 'Categoría',
+                contenido: lugar.categoria,
+                icono: Icons.category,
+              ),
+              _SeccionDetalle(
+                titulo: 'Costo orientativo',
+                contenido: lugar.costoOrientativo,
+                icono: Icons.payments_outlined,
+              ),
+              _SeccionDetalle(
+                titulo: 'Horario',
+                contenido: lugar.horario,
+                icono: Icons.schedule,
+              ),
+              _SeccionDetalle(
+                titulo: 'Información revisada',
+                contenido: formatearFecha(lugar.fechaActualizacion),
+                icono: Icons.update,
+              ),
+              const Text(
+                'Fuente oficial',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 4),
+              SelectableText(lugar.fuenteUrl),
+
               const SizedBox(height: 32),
               Center(
                 child: ElevatedButton.icon(
@@ -90,6 +124,45 @@ class DetalleLugarPage extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _SeccionDetalle extends StatelessWidget {
+  final String titulo;
+  final String contenido;
+  final IconData icono;
+
+  const _SeccionDetalle({
+    required this.titulo,
+    required this.contenido,
+    required this.icono,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icono, color: const Color(0xFF008577)),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  titulo,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4),
+                Text(contenido),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

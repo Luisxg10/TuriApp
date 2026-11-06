@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -17,11 +19,26 @@ class TurisAGSApp extends StatefulWidget {
 }
 
 class _TurisAGSAppState extends State<TurisAGSApp> {
+  StreamSubscription<User?>? _suscripcionDeSesion;
+
   @override
   void initState() {
     super.initState();
-    unawaited(favoritosViewModel.cargarFavoritos());
-    unawaited(itinerarioViewModel.cargarVisitas());
+    if (Firebase.apps.isEmpty) {
+      unawaited(favoritosViewModel.cargarFavoritos());
+      unawaited(itinerarioViewModel.cargarVisitas());
+    } else {
+      _suscripcionDeSesion = FirebaseAuth.instance.authStateChanges().listen((_) {
+        unawaited(favoritosViewModel.cargarFavoritos());
+        unawaited(itinerarioViewModel.cargarVisitas());
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    unawaited(_suscripcionDeSesion?.cancel());
+    super.dispose();
   }
 
   @override

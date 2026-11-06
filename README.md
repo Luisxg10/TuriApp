@@ -14,7 +14,7 @@ TurisAGS es una aplicación móvil Flutter para explorar lugares turísticos de 
 - Pronóstico meteorológico y temperatura actual consultados por HTTP.
 - Manejo de carga, errores, reintento y caché temporal del clima.
 
-La app permite crear una cuenta, iniciar y cerrar sesión, y solicitar restablecimiento de contraseña mediante Firebase Authentication. Favoritos e itinerario todavía se guardan localmente en el dispositivo; la sincronización por cuenta con Firestore queda como siguiente etapa.
+La app permite crear una cuenta, iniciar y cerrar sesión, y solicitar restablecimiento de contraseña mediante Firebase Authentication. Cuando hay una sesión activa, favoritos e itinerario se sincronizan con Cloud Firestore en el espacio privado de esa cuenta. Los datos locales existentes se incorporan a la cuenta al cargar los datos por primera vez.
 
 ## Tecnologías
 
@@ -22,6 +22,7 @@ La app permite crear una cuenta, iniciar y cerrar sesión, y solicitar restablec
 - `http` para consumir Open-Meteo Forecast API.
 - `shared_preferences` para guardar los favoritos en el dispositivo.
 - `firebase_core` y `firebase_auth` para inicializar Firebase y autenticar usuarios con correo y contraseña.
+- `cloud_firestore` para sincronizar favoritos e itinerario por cuenta.
 - Pruebas automatizadas con `flutter_test` y `http/testing.dart`.
 - Arquitectura organizada en modelos, vistas, ViewModels y repositorios.
 
@@ -59,7 +60,15 @@ El permiso `INTERNET` de Android está declarado en `android/app/src/main/Androi
 
 La consulta actual usa Open-Meteo (`https://api.open-meteo.com/v1/forecast`) y no requiere una clave ni variables de entorno. Las coordenadas del catálogo se mantienen en `lib/repositories/lugares_repository.dart`.
 
-Firebase se configura con FlutterFire. El archivo `lib/firebase_options.dart` contiene identificadores de configuración de cliente y no sustituye las reglas de seguridad del proyecto. Para conectar una instalación local, instala Firebase CLI y FlutterFire CLI, inicia sesión y ejecuta `flutterfire configure --project=turisags-2392c`; selecciona Android. La app inicia Firebase en `lib/main.dart`. En Firebase Console habilita Authentication con el proveedor **Correo electrónico/contraseña**. No se requieren variables de entorno para este flujo. No publiques contraseñas, tokens, claves privadas, archivos de cuentas de servicio ni keystores.
+Firebase se configura con FlutterFire. El archivo `lib/firebase_options.dart` contiene identificadores de configuración de cliente y no sustituye las reglas de seguridad del proyecto. Para conectar una instalación local, instala Firebase CLI y FlutterFire CLI, inicia sesión y ejecuta `flutterfire configure --project=turisags-2392c`; selecciona Android. La app inicia Firebase en `lib/main.dart`. En Firebase Console habilita Authentication con el proveedor **Correo electrónico/contraseña**.
+
+Para habilitar la sincronización, crea una base de datos **Cloud Firestore** en el modo nativo desde Firebase Console. Después de elegir la región, publica las reglas del archivo `firestore.rules` desde la raíz del proyecto:
+
+```bash
+firebase deploy --only firestore:rules --project=turisags-2392c
+```
+
+Las reglas limitan lectura y escritura al usuario autenticado bajo `users/{uid}/favoritos` y `users/{uid}/itinerario`. Revisa esas reglas antes de ampliar los datos o publicar la aplicación. No abras la base de datos a todos los usuarios. No se requieren variables de entorno para esta configuración cliente. No publiques contraseñas, tokens, claves privadas, archivos de cuentas de servicio ni keystores.
 
 ## Organización del código
 
@@ -67,7 +76,7 @@ Firebase se configura con FlutterFire. El archivo `lib/firebase_options.dart` co
 lib/
   app/           configuración de la aplicación
   models/        modelos de dominio y datos
-  repositories/  acceso a datos locales, HTTP, autenticación y favoritos
+  repositories/  acceso a datos locales, HTTP, autenticación y Firestore
   viewmodels/    lógica de presentación y selección de datos
   views/         pantallas Flutter
 test/            pruebas automatizadas

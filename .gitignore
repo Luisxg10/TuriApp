@@ -41,6 +41,9 @@ migrate_working_dir/
 .env
 .env.*
 !.env.example
+# Firebase client configuration; regenerate locally with FlutterFire CLI.
+/lib/firebase_options.dart
+/android/app/google-services.json
 **/service-account*.json
 **/*service-account*.json
 **/google-services-secret.json

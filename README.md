@@ -46,19 +46,24 @@ flutter pub get
 flutter run
 ```
 
-El proyecto incluye configuración cliente para Android en `lib/firebase_options.dart` y `android/app/google-services.json`. Para conectar otro proyecto, instala e inicia sesión en Firebase CLI y FlutterFire CLI y ejecuta:
+Los archivos `lib/firebase_options.dart` y `android/app/google-services.json` se generan localmente y no se versionan. Para usar tu propio Firebase, crea un proyecto en Firebase Console y registra una aplicación Android con el identificador de paquete del proyecto. Habilita Authentication con el proveedor **Correo electrónico/contraseña** y crea una base de datos Firestore.
+
+Instala Firebase CLI y FlutterFire CLI, inicia sesión y genera la configuración local desde la raíz del proyecto:
 
 ```bash
+npm install -g firebase-tools
+dart pub global activate flutterfire_cli
+firebase login
 flutterfire configure --project=ID_DEL_PROYECTO --platforms=android
 ```
 
-En Firebase Console habilita Authentication con el proveedor **Correo electrónico/contraseña** y crea la base de datos Firestore en modo nativo. Las reglas actuales se publican desde la raíz del repositorio:
+Después ejecuta `flutter pub get` y `flutter run`. Para publicar las reglas de Firestore, usa:
 
 ```bash
 firebase deploy --only firestore:rules --project=ID_DEL_PROYECTO
 ```
 
-En el proyecto universitario utilizado durante el desarrollo, el ID es `turisags-2392c`.
+La clave API y el identificador de aplicación de Firebase son configuración cliente; no son credenciales de servidor. Restringe la clave a las APIs de Firebase que utilices y protege los datos con reglas de Firestore. Nunca subas claves privadas ni archivos de cuentas de servicio.
 
 ## Datos y permisos de Firestore
 
@@ -95,7 +100,7 @@ Las pruebas de clima utilizan un cliente HTTP simulado para verificar el procesa
 
 ## Seguridad y archivos locales
 
-`.gitignore` excluye archivos locales de entorno, keystores y credenciales de cuentas de servicio. `firebase_options.dart` y `google-services.json` son configuración cliente de Firebase, no credenciales de servidor; los permisos se hacen cumplir con Authentication y `firestore.rules`. Nunca agregues contraseñas, claves privadas, tokens de acceso ni JSON de cuenta de servicio al repositorio.
+`.gitignore` excluye la configuración local generada por FlutterFire (`lib/firebase_options.dart` y `android/app/google-services.json`), archivos de entorno, keystores y credenciales de cuentas de servicio. La clave API de Firebase es configuración cliente, no una clave privada; limita su uso a las APIs necesarias. Los permisos sobre los datos se hacen cumplir con Authentication y `firestore.rules`. Nunca agregues contraseñas, claves privadas, tokens de acceso ni JSON de cuenta de servicio al repositorio.
 
 ## Historial Git
 
